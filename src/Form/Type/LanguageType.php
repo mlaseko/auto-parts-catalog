@@ -24,7 +24,8 @@ class LanguageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Fetch the languages from the API
-        $languages = $this->catalogApi->getAllLanguages();
+        $response = $this->catalogApi->getAllLanguages();
+        $languages = $response['data'] ?? [];
 
         // Map the API response to choices (assuming 'lngDescription' is a valid field in the response)
         $languageChoices = [];
@@ -33,11 +34,12 @@ class LanguageType extends AbstractType
         }
 
         // Fetch the vehicle types from the API
-        $vehicleTypes = $this->catalogApi->getAllVehicleTypes();
+        $vehicleTypesResponse = $this->catalogApi->getAllVehicleTypes();
+        $vehicleTypes = $vehicleTypesResponse['data'] ?? [];
 
         $vehicleTypesChoices = [];
-        foreach ($vehicleTypes as $vehicleTypes) {
-            $vehicleTypesChoices[$vehicleTypes['vehicleType']] = $vehicleTypes['id'];
+        foreach ($vehicleTypes as $vehicleType) {
+            $vehicleTypesChoices[$vehicleType['vehicleType']] = $vehicleType['id'];
         }
 
         $builder
