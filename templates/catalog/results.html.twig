@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if query is defined and query %}
+        Search: {{ query }}
+    {% else %}
+        {{ partGroup }} › {{ partComponent }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    {{ include('blocks/_page_header.html.twig') }}
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('catalog_groups') }}">Parts Catalog</a></li>
+            {% if partGroup %}
+                <li class="breadcrumb-item">
+                    <a href="{{ path('catalog_components', {partGroup: partGroup}) }}">{{ partGroup }}</a>
+                </li>
+                <li class="breadcrumb-item active">{{ partComponent }}</li>
+            {% else %}
+                <li class="breadcrumb-item active">Search results</li>
+            {% endif %}
+        </ol>
+    </nav>
+
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h2>
+                {% if query is defined and query %}
+                    Search results for "{{ query }}"
+                {% else %}
+                    {{ partComponent }}
+                {% endif %}
+            </h2>
+            <span class="text-muted">{{ products|length }} product(s) found</span>
+        </div>
+        <div class="col-auto">
+            <form class="d-flex gap-2" action="{{ path('catalog_search') }}" method="get">
+                <input class="form-control" type="search" name="q"
+                       value="{{ query is defined ? query : '' }}"
+                       placeholder="Search by OEM / article number…" style="min-width:260px">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {% if products is empty %}
+        <div class="alert alert-info">No products found.</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+            {% for product in products %}
+                <div class="col">
+                    {{ include('catalog/_product_card.html.twig', {product: product}) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if partGroup and partComponent %}
+            <nav class="mt-4">
+                <ul class="pagination">
+                    {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ path('catalog_results', {partGroup: partGroup, partComponent: partComponent, page: page - 1, vehicleId: vehicleId}) }}">
+                                Previous
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if products|length == limit %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ path('catalog_results', {partGroup: partGroup, partComponent: partComponent, page: page + 1, vehicleId: vehicleId}) }}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

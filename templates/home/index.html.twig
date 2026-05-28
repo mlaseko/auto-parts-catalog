@@ -66,6 +66,24 @@
 
     <hr>
 
+    <div class="card card-md mt-3">
+        <div class="card-body">
+            <h4>Browse Internal Parts Catalog</h4>
+            <p class="text-muted mb-3">
+                Search and browse our cleaned parts catalog by group, component, or OEM number.
+            </p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ path('catalog_groups') }}" class="btn btn-success">
+                    Browse Parts Groups
+                </a>
+                <form class="d-flex gap-2" action="{{ path('catalog_search') }}" method="get">
+                    <input class="form-control" type="search" name="q"
+                           placeholder="OEM / article number…" style="min-width:220px">
+                    <button class="btn btn-outline-success" type="submit">Search Parts</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
