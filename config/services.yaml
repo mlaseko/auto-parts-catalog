@@ -22,3 +22,16 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Catalog repositories receive the named parts_catalog DBAL connection
+    App\Repository\Catalog\CategoryRepository:
+        arguments:
+            $connection: '@doctrine.dbal.parts_catalog_connection'
+
+    App\Repository\Catalog\OitmRepository:
+        arguments:
+            $connection: '@doctrine.dbal.parts_catalog_connection'
+
+    App\Repository\Catalog\CrossReferenceRepository:
+        arguments:
+            $connection: '@doctrine.dbal.parts_catalog_connection'

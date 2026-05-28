@@ -1,0 +1,44 @@
+<a class="card h-100 text-decoration-none text-dark" href="{{ path('catalog_detail', {id: product.id}) }}">
+    {% if product.image_url %}
+        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}"
+             style="max-height:180px;object-fit:contain;padding:8px">
+    {% endif %}
+    <div class="card-body">
+        <h6 class="card-title mb-1">{{ product.name }}</h6>
+        <p class="text-muted small mb-1">{{ product.supplier_name }}</p>
+
+        {% if product.part_group %}
+            <span class="badge bg-secondary">{{ product.part_group }}</span>
+        {% endif %}
+        {% if product.part_component %}
+            <span class="badge bg-light text-dark border">{{ product.part_component }}</span>
+        {% endif %}
+
+        <table class="table table-sm mt-2 mb-0 small">
+            {% if product.item_code %}
+                <tr><th>Item Code</th><td>{{ product.item_code }}</td></tr>
+            {% endif %}
+            {% if product.article_number %}
+                <tr><th>Article #</th><td>{{ product.article_number }}</td></tr>
+            {% endif %}
+            {% if product.canonical_oem_number %}
+                <tr><th>OEM</th><td>{{ product.canonical_oem_number }}</td></tr>
+            {% endif %}
+            {% if product.sell_price_tzs %}
+                <tr><th>Price (TZS)</th><td>{{ product.sell_price_tzs|number_format(0, '.', ',') }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    <div class="card-footer small d-flex justify-content-between">
+        <span>
+            {% if product.stock_on_hand > 0 %}
+                <span class="text-success fw-semibold">✔ In Stock ({{ product.stock_on_hand }})</span>
+            {% else %}
+                <span class="text-muted">Out of stock</span>
+            {% endif %}
+        </span>
+        {% if product.compatible_vehicles_count %}
+            <span class="text-muted">Fits {{ product.compatible_vehicles_count }} vehicles</span>
+        {% endif %}
+    </div>
+</a>

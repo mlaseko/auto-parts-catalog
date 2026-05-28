@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {{ include('blocks/_page_header.html.twig') }}
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('catalog_groups') }}">Parts Catalog</a></li>
+            {% if product.part_group %}
+                <li class="breadcrumb-item">
+                    <a href="{{ path('catalog_components', {partGroup: product.part_group}) }}">{{ product.part_group }}</a>
+                </li>
+            {% endif %}
+            {% if product.part_component and product.part_group %}
+                <li class="breadcrumb-item">
+                    <a href="{{ path('catalog_results', {partGroup: product.part_group, partComponent: product.part_component}) }}">{{ product.part_component }}</a>
+                </li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" class="img-fluid rounded border" alt="{{ product.name }}">
+            {% else %}
+                <div class="border rounded d-flex align-items-center justify-content-center bg-light"
+                     style="height:220px;font-size:3rem;">🔩</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <h2>{{ product.name }}</h2>
+            <p class="text-muted">{{ product.supplier_name }}</p>
+
+            {% if product.part_group %}
+                <span class="badge bg-secondary me-1">{{ product.part_group }}</span>
+            {% endif %}
+            {% if product.part_component %}
+                <span class="badge bg-light text-dark border">{{ product.part_component }}</span>
+            {% endif %}
+
+            <table class="table table-bordered mt-3">
+                <tbody>
+                    {% if product.item_code %}
+                        <tr><th>Item Code</th><td>{{ product.item_code }}</td></tr>
+                    {% endif %}
+                    {% if product.article_number %}
+                        <tr><th>Article Number</th><td>{{ product.article_number }}</td></tr>
+                    {% endif %}
+                    {% if product.canonical_oem_number %}
+                        <tr><th>OEM Number</th><td>{{ product.canonical_oem_number }}</td></tr>
+                    {% endif %}
+                    {% if product.ean_barcode %}
+                        <tr><th>EAN / Barcode</th><td>{{ product.ean_barcode }}</td></tr>
+                    {% endif %}
+                    {% if product.weight_kg %}
+                        <tr><th>Weight (kg)</th><td>{{ product.weight_kg }}</td></tr>
+                    {% endif %}
+                    <tr>
+                        <th>Stock</th>
+                        <td>
+                            {% if product.stock_on_hand > 0 %}
+                                <span class="text-success fw-semibold">In Stock ({{ product.stock_on_hand }})</span>
+                            {% else %}
+                                <span class="text-muted">Out of stock</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if product.sell_price_tzs %}
+                        <tr><th>Price (TZS)</th><td>{{ product.sell_price_tzs|number_format(0, '.', ',') }}</td></tr>
+                    {% endif %}
+                    {% if product.compatible_vehicles_count %}
+                        <tr><th>Compatible Vehicles</th><td>{{ product.compatible_vehicles_count }}</td></tr>
+                    {% endif %}
+                    {% if product.enrichment_confidence %}
+                        <tr>
+                            <th>Confidence</th>
+                            <td>
+                                {% if product.enrichment_confidence < 0.8 %}
+                                    <span class="badge bg-warning text-dark">Low ({{ (product.enrichment_confidence * 100)|round }}%)</span>
+                                {% else %}
+                                    <span class="badge bg-success">{{ (product.enrichment_confidence * 100)|round }}%</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if crossReferences is not empty %}
+        <hr class="my-4">
+        <h4>Cross References / OEM Equivalents</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>OEM Number</th>
+                        <th>Manufacturer</th>
+                        <th>Type</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ref in crossReferences %}
+                        <tr>
+                            <td><code>{{ ref.oem_number }}</code></td>
+                            <td>{{ ref.manufacturer_name }}</td>
+                            <td>{{ ref.reference_type }}</td>
+                            <td>{{ ref.source }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
